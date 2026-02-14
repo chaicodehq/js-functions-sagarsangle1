@@ -54,21 +54,69 @@
  *   // red and blue objects are UNCHANGED
  */
 export function mixColors(color1, color2) {
-  // Your code here
+  if (!color1 || !color2 || typeof color1 !== 'object' || typeof color2 !== 'object') {
+    return null;
+  }
+  const { name: name1, r: r1, g: g1, b: b1 } = color1;
+  const { name: name2, r: r2, g: g2, b: b2 } = color2;
+  if (typeof name1 !== 'string' || typeof name2 !== 'string' ||
+      typeof r1 !== 'number' || typeof g1 !== 'number' || typeof b1 !== 'number' ||
+      typeof r2 !== 'number' || typeof g2 !== 'number' || typeof b2 !== 'number') {
+    return null;
+  }
+  return {
+    name: `${name1}-${name2}`,
+    r: Math.round((r1 + r2) / 2),
+    g: Math.round((g1 + g2) / 2),
+    b: Math.round((b1 + b2) / 2)
+  };
 }
 
 export function adjustBrightness(color, factor) {
-  // Your code here
+  if (!color || typeof color !== 'object' || typeof factor !== 'number') {
+    return null;
+  }
+  const { name, r, g, b } = color;
+  if (typeof name !== 'string' || typeof r !== 'number' || typeof g !== 'number' || typeof b !== 'number') {
+    return null;
+  }
+  const newR = Math.min(255, Math.max(0, Math.round(r * factor)));
+  const newG = Math.min(255, Math.max(0, Math.round(g * factor)));
+  const newB = Math.min(255, Math.max(0, Math.round(b * factor)));
+  return { name, r: newR, g: newG, b: newB };
 }
 
 export function addToPalette(palette, color) {
-  // Your code here
+  if (!Array.isArray(palette)) {
+    return [color];
+  }
+  if (!color || typeof color !== 'object') {
+    return [...palette];
+  }
+  return [...palette, color];
 }
 
 export function removeFromPalette(palette, colorName) {
-  // Your code here
+  if (!Array.isArray(palette)) {
+    return [];
+  }
+  return palette.filter(color => color.name !== colorName);
 }
 
 export function mergePalettes(palette1, palette2) {
-  // Your code here
+  if (!Array.isArray(palette1)) {
+    palette1 = [];
+  }
+  if (!Array.isArray(palette2)) {
+    palette2 = [];
+  }
+  const seenNames = new Set();
+  const merged = [];
+  [...palette1, ...palette2].forEach(color => {
+    if (color && typeof color === 'object' && typeof color.name === 'string' && !seenNames.has(color.name)) {
+      seenNames.add(color.name);
+      merged.push(color);
+    }
+  });
+  return merged;
 }
